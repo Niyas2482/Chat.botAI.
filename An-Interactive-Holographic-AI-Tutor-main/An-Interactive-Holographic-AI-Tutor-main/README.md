@@ -42,6 +42,5 @@ EduBot is an AI-powered interactive tutor that:
 
 ## ▶️ Installation
 
-1. Clone the repo : git clone https://github.com/akbarhussain4725/An-Interactive-Holographic-AI-Tutor
-2. Install requirements: pip install -r requirements.txt
-3. Run the app: python app.py
+1. Install requirements: pip install -r requirements.txt
+2. Run the app: python app.py
