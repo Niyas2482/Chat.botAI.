@@ -36,6 +36,7 @@ from gtts import gTTS
 import os
 from moviepy.editor import VideoFileClip, AudioFileClip
 import pyttsx3
+import subprocess
 
 nltk.download("punkt", quiet=True)
 nltk.download("wordnet", quiet=True)
@@ -139,29 +140,31 @@ def get_response(intents_list, intents_json):
 
 
 def generate_audio(text):
-    if not os.path.exists(OUTPUT_FOLDER):
-        os.makedirs(OUTPUT_FOLDER)
+    os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
     audio_path = os.path.join(OUTPUT_FOLDER, "output.wav")
+    mp3_path = os.path.join(OUTPUT_FOLDER, "output.mp3")
 
-    # delete old file (avoid caching issues)
-    if os.path.exists(audio_path):
-        os.remove(audio_path)
+    # Remove previous audio files
+    for path in (audio_path, mp3_path):
+        if os.path.exists(path):
+            os.remove(path)
 
-    engine = pyttsx3.init()
-    voices = engine.getProperty("voices")
+    # Generate speech using Google Text-to-Speech
+    tts = gTTS(text=text, lang="en", slow=False)
+    tts.save(mp3_path)
 
-    # Force male voice (David)
-    for voice in voices:
-        if "DAVID" in voice.id.upper():
-            engine.setProperty("voice", voice.id)
-            break
-
-    engine.setProperty("rate", 170)
-    engine.setProperty("volume", 1.0)
-
-    engine.save_to_file(text, audio_path)
-    engine.runAndWait()
+    # Convert MP3 to WAV for MoviePy
+    subprocess.run(
+        [
+            "ffmpeg", "-y",
+            "-i", mp3_path,
+            audio_path
+        ],
+        check=True,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL
+    )
 
     return audio_path
 
