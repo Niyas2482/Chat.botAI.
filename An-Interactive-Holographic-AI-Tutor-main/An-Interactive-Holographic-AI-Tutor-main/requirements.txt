@@ -11,3 +11,4 @@ gTTS
 moviepy==1.0.3
 reportlab
 gunicorn==23.0.0
+pyttsx3
