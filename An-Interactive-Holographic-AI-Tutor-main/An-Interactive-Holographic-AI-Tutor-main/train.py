@@ -61,9 +61,7 @@ for doc in documents:
     output_row = list(output_empty)
     output_row[classes.index(doc[1])] = 1
     training.append([bag, output_row])
-
-
-    training.append([bag, output_row])
+    
 random.shuffle(training)
 training = np.array(training,dtype=object)
 train_x = list(training[:, 0])
