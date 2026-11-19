@@ -10,3 +10,5 @@ moviepy==1.0.3
 reportlab
 gunicorn==23.0.0
 pyttsx3
+
+Pillow==9.5.0
