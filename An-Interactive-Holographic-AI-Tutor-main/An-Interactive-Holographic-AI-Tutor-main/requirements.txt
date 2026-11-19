@@ -9,3 +9,4 @@ keras
 gtts
 moviepy
 reportlab
+gunicorn==23.0.0
