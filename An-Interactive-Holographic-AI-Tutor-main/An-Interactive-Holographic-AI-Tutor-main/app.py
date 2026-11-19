@@ -34,8 +34,6 @@ import io
 import os
 from gtts import gTTS
 import os
-from moviepy.editor import VideoFileClip, AudioFileClip
-import pyttsx3
 import subprocess
 
 nltk.download("punkt", quiet=True)
@@ -168,34 +166,6 @@ def generate_audio(text):
 
     return audio_path
 
-
-def generate_video():
-    if not os.path.exists(OUTPUT_FOLDER):
-        os.makedirs(OUTPUT_FOLDER)
-
-    audio_path = os.path.join(OUTPUT_FOLDER, "output.wav")
-
-    filename = f"output_{int(time.time())}.mp4"
-    video_path = os.path.join(OUTPUT_FOLDER, filename)
-
-    avatar = VideoFileClip("static/videos/avatar.mp4")
-    audio = AudioFileClip(audio_path)
-
-    duration = audio.duration if audio.duration else avatar.duration
-    avatar = avatar.loop(duration=duration)
-
-    final = avatar.set_audio(audio).resize((512, 512))
-
-    final.write_videofile(
-        video_path,
-        fps=24,
-        codec="libx264",
-        audio_codec="aac",
-        preset="ultrafast"
-    )
-
-    return video_path
-
 @app.route("/")
 def index():
     return render_template("landing.html")
@@ -276,7 +246,7 @@ def api_message():
         bot_reply = get_response(intents_list, intents)
 
         generate_audio(bot_reply)
-        video_path = generate_video()
+video_path = None
     else:
         bot_reply = "Model not loaded. Please ensure chatbot_model.h5 is present."
         video_path = None
@@ -294,7 +264,7 @@ def api_message():
         "reply": bot_reply,
         "timestamp": datetime.utcnow().strftime("%I:%M %p"),
         "audio_url": "/static/hologram/output.wav",
-        "video_url": "/download_video"
+       "video_url": None
     })
 
 @app.route("/api/history")
@@ -421,15 +391,6 @@ def export_pdf():
         download_name=f"edubot_chat_{current_user.username}.pdf",
         mimetype="application/pdf",
     )
-
-
-@app.route("/download_video")
-def download_video():
-    files = sorted(os.listdir(OUTPUT_FOLDER), reverse=True)
-    latest_video = [f for f in files if f.endswith(".mp4")][0]
-
-    return send_file(os.path.join(OUTPUT_FOLDER, latest_video), as_attachment=True)
-
 
 if __name__ == "__main__":
     with app.app_context():
