@@ -118,6 +118,19 @@ def bag_of_words(sentence):
     return np.array(bag)
 
 
+def generate_audio(text):
+    os.makedirs(OUTPUT_FOLDER, exist_ok=True)
+
+    mp3_path = os.path.join(OUTPUT_FOLDER, "output.mp3")
+
+    if os.path.exists(mp3_path):
+        os.remove(mp3_path)
+
+    tts = gTTS(text=text, lang="en", slow=False)
+    tts.save(mp3_path)
+
+    return mp3_path
+
 def predict_class(sentence):
     bow = bag_of_words(sentence)
     res = model.predict(np.array([bow]), verbose=0)[0]
@@ -263,8 +276,8 @@ video_path = None
     return jsonify({
         "reply": bot_reply,
         "timestamp": datetime.utcnow().strftime("%I:%M %p"),
-        "audio_url": "/static/hologram/output.wav",
-       "video_url": None
+"audio_url": "/static/hologram/output.mp3",
+        "video_url": None
     })
 
 @app.route("/api/history")
