@@ -25,16 +25,15 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
 from reportlab.lib.units import cm
 import numpy as np
-import time
 import json
 import pickle
 import nltk
 import random
 import io
 import os
+import uuid
 from gtts import gTTS
 import os
-import subprocess
 
 nltk.download("punkt", quiet=True)
 nltk.download("wordnet", quiet=True)
@@ -118,19 +117,6 @@ def bag_of_words(sentence):
     return np.array(bag)
 
 
-def generate_audio(text):
-    os.makedirs(OUTPUT_FOLDER, exist_ok=True)
-
-    mp3_path = os.path.join(OUTPUT_FOLDER, "output.mp3")
-
-    if os.path.exists(mp3_path):
-        os.remove(mp3_path)
-
-    tts = gTTS(text=text, lang="en", slow=False)
-    tts.save(mp3_path)
-
-    return mp3_path
-
 def predict_class(sentence):
     bow = bag_of_words(sentence)
     res = model.predict(np.array([bow]), verbose=0)[0]
@@ -153,31 +139,13 @@ def get_response(intents_list, intents_json):
 def generate_audio(text):
     os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
-    audio_path = os.path.join(OUTPUT_FOLDER, "output.wav")
-    mp3_path = os.path.join(OUTPUT_FOLDER, "output.mp3")
+    filename = f"output_{uuid.uuid4().hex}.mp3"
+    mp3_path = os.path.join(OUTPUT_FOLDER, filename)
 
-    # Remove previous audio files
-    for path in (audio_path, mp3_path):
-        if os.path.exists(path):
-            os.remove(path)
-
-    # Generate speech using Google Text-to-Speech
     tts = gTTS(text=text, lang="en", slow=False)
     tts.save(mp3_path)
 
-    # Convert MP3 to WAV for MoviePy
-    subprocess.run(
-        [
-            "ffmpeg", "-y",
-            "-i", mp3_path,
-            audio_path
-        ],
-        check=True,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL
-    )
-
-    return audio_path
+    return mp3_path
 
 @app.route("/")
 def index():
@@ -239,7 +207,7 @@ def chat():
 @app.route("/api/message", methods=["POST"])
 @login_required
 def api_message():
-    data = request.get_json()
+    data = request.get_json() or {}
     user_msg = data.get("message", "").strip()
     sess_id = data.get("session_id", "default")
 
@@ -254,15 +222,15 @@ def api_message():
     )
     db.session.add(user_entry)
 
+    audio_url = None
+
     if MODEL_LOADED:
         intents_list = predict_class(user_msg)
         bot_reply = get_response(intents_list, intents)
-
-        generate_audio(bot_reply)
-video_path = None
+        audio_path = generate_audio(bot_reply)
+        audio_url = f"/static/hologram/{os.path.basename(audio_path)}"
     else:
         bot_reply = "Model not loaded. Please ensure chatbot_model.h5 is present."
-        video_path = None
 
     bot_entry = ChatMessage(
         user_id=current_user.id,
@@ -276,9 +244,10 @@ video_path = None
     return jsonify({
         "reply": bot_reply,
         "timestamp": datetime.utcnow().strftime("%I:%M %p"),
-"audio_url": "/static/hologram/output.mp3",
+        "audio_url": audio_url,
         "video_url": None
     })
+
 
 @app.route("/api/history")
 @login_required
@@ -405,7 +374,7 @@ def export_pdf():
         mimetype="application/pdf",
     )
 
+
+
 if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
-    app.run(host="0.0.0.0", port=3000, debug=False)
+    app.run(host="0.0.0.0", port=3000, debug=True)
