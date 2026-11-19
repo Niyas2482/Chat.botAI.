@@ -49,7 +49,8 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get(
     "SECRET_KEY",
     "dev-only-secret-key-change-me"
-)app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///edubot.db"
+)
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///edubot.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
