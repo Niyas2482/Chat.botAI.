@@ -1,5 +1,5 @@
 
-# Python
+# Python cache
 __pycache__/
 *.pyc
 
@@ -13,5 +13,3 @@ venv/
 # Generated audio/video
 static/hologram/
 hologram/
-
-# Keep chatbot model files tracked
