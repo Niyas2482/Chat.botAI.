@@ -1,12 +1,10 @@
-
 Flask
 Flask-SQLAlchemy
 Flask-Login
 Werkzeug
 numpy<2
 nltk
-tensorflow
-keras
+tensorflow==2.15.1
 gTTS
 moviepy==1.0.3
 reportlab
