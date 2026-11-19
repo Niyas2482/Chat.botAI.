@@ -1,16 +1,17 @@
+
 # Python
 __pycache__/
 *.pyc
-*.pkl
 
-# Virtual env
+# Virtual environments
 venv/
+.venv/
 
 # Database
 *.db
 
-# Model files (optional)
-chatbot_model.h5
-
-# Generated files
+# Generated audio/video
+static/hologram/
 hologram/
+
+# Keep chatbot model files tracked
