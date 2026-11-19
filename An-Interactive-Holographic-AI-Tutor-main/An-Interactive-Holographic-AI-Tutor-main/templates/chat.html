@@ -1027,8 +1027,8 @@
 
       <!-- ── 60% Avatar pane ── -->
       <div class="avatar-pane" id="avatarPane">
-        <video id="avatarVideo" loop muted playsinline>
-          <source src="/static/videos/avatar.mp4" type="video/mp4">
+<video id="avatarVideo" loop muted playsinline preload="none">
+  <source src="/static/videos/avatar.mp4" type="video/mp4">
         </video>
         <img class="av-idle-img" id="avIdleImg"
           src="https://images.pexels.com/photos/5212700/pexels-photo-5212700.jpeg?auto=compress&cs=tinysrgb&w=900"
@@ -1232,22 +1232,6 @@
 
       if (data.reply) {
   addMessage('bot', data.reply, data.timestamp);
-
-  // ✅ KEEP YOUR DOWNLOAD FEATURE
-  setTimeout(() => {
-    fetch('/download_video')
-      .then(response => response.blob())
-      .then(blob => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = "hologram.mp4";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-      })
-      .catch(err => console.error("Download failed:", err));
-  }, 3000);
 
   // ✅ ADD BACKEND MALE VOICE
   if (ttsEnabled && data.audio_url) {
