@@ -96,7 +96,10 @@ class ChatMessage(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     session_id = db.Column(db.String(50))
 
-
+# Initialize database tables when the application starts
+with app.app_context():
+    db.create_all()
+    
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
