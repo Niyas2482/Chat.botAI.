@@ -1353,16 +1353,44 @@ async function sendMessage() {
   }
 }
 
+    
+let recognition = null;
+
+if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  recognition = new SpeechRec();
+  recognition.lang = getSpeechLanguage(languageSelect.value);
+
+  recognition.onresult = e => {
+    msgInput.value = e.results[0][0].transcript;
+  };
+
+  recognition.onerror = e => {
+    console.error('Speech recognition error:', e.error);
+  };
+}
+
+voiceBtn.addEventListener('click', () => {
+  if (!recognition) {
+    return alert('Voice not supported');
+  }
+
+  recognition.lang = getSpeechLanguage(languageSelect.value);
+  recognition.start();
+});
+
+    
 
   // 🎤 Voice input (unchanged)
   let recognition = null;
   if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
     const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
     recognition = new SpeechRec();
-    recognition.lang = 'en-IN';
-    recognition.onresult = e => {
-      msgInput.value = e.results[0][0].transcript;
-    };
+recognition.lang = getSpeechLanguage(languageSelect.value);
+   recognition.onresult = e => {
+  msgInput.value = e.results[0][0].transcript;
+};
   }
 
   voiceBtn.addEventListener('click', () => {
