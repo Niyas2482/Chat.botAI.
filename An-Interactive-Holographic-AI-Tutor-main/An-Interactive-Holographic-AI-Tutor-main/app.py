@@ -150,7 +150,36 @@ def generate_audio(text):
 @app.route("/")
 def index():
     return render_template("landing.html")
+import os
+import requests
 
+GOOGLE_TRANSLATE_API_KEY = os.getenv("GOOGLE_TRANSLATE_API_KEY")
+
+def translate_text(text, target_language, source_language="auto"):
+    if not text or target_language == "en":
+        return text
+
+    if not GOOGLE_TRANSLATE_API_KEY:
+        raise RuntimeError("Google Translate API key is not configured")
+
+    url = "https://translation.googleapis.com/language/translate/v2"
+
+    response = requests.post(
+        url,
+        params={"key": GOOGLE_TRANSLATE_API_KEY},
+        json={
+            "q": text,
+            "source": source_language,
+            "target": target_language,
+            "format": "text"
+        },
+        timeout=15
+    )
+
+    response.raise_for_status()
+
+    result = response.json()
+    return result["data"]["translations"][0]["translatedText"]
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
