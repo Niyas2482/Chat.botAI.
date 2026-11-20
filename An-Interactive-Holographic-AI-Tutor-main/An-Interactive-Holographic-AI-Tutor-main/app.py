@@ -235,9 +235,13 @@ def chat():
 
 @app.route("/api/message", methods=["POST"])
 @login_required
+@app.route("/api/message", methods=["POST"])
+@login_required
 def api_message():
     data = request.get_json() or {}
+
     user_msg = data.get("message", "").strip()
+    target_language = data.get("language", "en")
     sess_id = data.get("session_id", "default")
 
     if not user_msg:
@@ -254,10 +258,25 @@ def api_message():
     audio_url = None
 
     if MODEL_LOADED:
-        intents_list = predict_class(user_msg)
+        # Translate the user's message into English for the chatbot model
+        english_message = translate_text(
+            user_msg,
+            "en"
+        )
+
+        intents_list = predict_class(english_message)
         bot_reply = get_response(intents_list, intents)
+
+        # Translate the chatbot's English response into the selected language
+        bot_reply = translate_text(
+            bot_reply,
+            target_language,
+            source_language="en"
+        )
+
         audio_path = generate_audio(bot_reply)
         audio_url = f"/static/hologram/{os.path.basename(audio_path)}"
+
     else:
         bot_reply = "Model not loaded. Please ensure chatbot_model.h5 is present."
 
