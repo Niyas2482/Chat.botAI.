@@ -100,7 +100,36 @@ class ChatMessage(db.Model):
 # Initialize database tables when the application starts
 with app.app_context():
     db.create_all()
-    
+
+def translate_text(text, target_language, source_language=None):
+    if not text or target_language == "en":
+        return text
+
+    if not GOOGLE_TRANSLATE_API_KEY:
+        raise RuntimeError("Google Translate API key is not configured")
+
+    url = "https://translation.googleapis.com/language/translate/v2"
+
+    payload = {
+        "q": text,
+        "target": target_language,
+        "format": "text"
+    }
+
+    if source_language:
+        payload["source"] = source_language
+
+    response = requests.post(
+        url,
+        params={"key": GOOGLE_TRANSLATE_API_KEY},
+        json=payload,
+        timeout=15
+    )
+
+    response.raise_for_status()
+
+    result = response.json()
+    return result["data"]["translations"][0]["translatedText"]
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -136,14 +165,14 @@ def get_response(intents_list, intents_json):
     return "I'm not sure about that. Try asking about a subject!"
 
 
-def generate_audio(text):
+def generate_audio(text, language="en"):
     os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
     filename = f"output_{uuid.uuid4().hex}.mp3"
     mp3_path = os.path.join(OUTPUT_FOLDER, filename)
 
-    tts = gTTS(text=text, lang="en", slow=False)
-    tts.save(mp3_path)
+tts = gTTS(text=text, lang=language, slow=False)
+tts.save(mp3_path)
 
     return mp3_path
 
