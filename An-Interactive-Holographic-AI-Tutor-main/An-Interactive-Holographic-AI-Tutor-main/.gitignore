@@ -12,3 +12,14 @@ venv/
 # Generated audio/video
 static/hologram/
 hologram/
+# Local backups
+*_backup*.py
+*.backup
+*.backup_*
+*_backup_*/
+backup_chat_history_*/
+
+# Temporary files
+tempCodeRunnerFile.py
+.ipynb_checkpoints/
+instance/
