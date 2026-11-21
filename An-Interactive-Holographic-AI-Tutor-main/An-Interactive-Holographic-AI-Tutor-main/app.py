@@ -171,8 +171,8 @@ def generate_audio(text, language="en"):
     filename = f"output_{uuid.uuid4().hex}.mp3"
     mp3_path = os.path.join(OUTPUT_FOLDER, filename)
 
-tts = gTTS(text=text, lang=language, slow=False)
-tts.save(mp3_path)
+    tts = gTTS(text=text, lang=language, slow=False)
+    tts.save(mp3_path)
 
     return mp3_path
 
@@ -184,8 +184,12 @@ import requests
 
 GOOGLE_TRANSLATE_API_KEY = os.getenv("GOOGLE_TRANSLATE_API_KEY")
 
-def translate_text(text, target_language, source_language="auto"):
-    if not text or target_language == "en":
+
+def translate_text(text, target_language, source_language=None):
+    if not text:
+        return text
+
+    if source_language == target_language:
         return text
 
     if not GOOGLE_TRANSLATE_API_KEY:
@@ -193,15 +197,20 @@ def translate_text(text, target_language, source_language="auto"):
 
     url = "https://translation.googleapis.com/language/translate/v2"
 
+    payload = {
+        "q": text,
+        "target": target_language,
+        "format": "text"
+    }
+
+    # If source_language is omitted, Google detects it automatically.
+    if source_language and source_language != "auto":
+        payload["source"] = source_language
+
     response = requests.post(
         url,
         params={"key": GOOGLE_TRANSLATE_API_KEY},
-        json={
-            "q": text,
-            "source": source_language,
-            "target": target_language,
-            "format": "text"
-        },
+        json=payload,
         timeout=15
     )
 
@@ -209,7 +218,7 @@ def translate_text(text, target_language, source_language="auto"):
 
     result = response.json()
     return result["data"]["translations"][0]["translatedText"]
-
+    
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if current_user.is_authenticated:
@@ -264,8 +273,6 @@ def chat():
 
 @app.route("/api/message", methods=["POST"])
 @login_required
-@app.route("/api/message", methods=["POST"])
-@login_required
 def api_message():
     data = request.get_json() or {}
 
@@ -273,79 +280,81 @@ def api_message():
     target_language = data.get("language", "en")
     sess_id = data.get("session_id", "default")
 
+    supported_languages = {
+        "en", "ta", "hi", "te", "ml",
+        "kn", "fr", "es", "de", "ar"
+    }
+
     if not user_msg:
         return jsonify({"error": "Empty message"}), 400
 
-    user_entry = ChatMessage(
-        user_id=current_user.id,
-        sender="user",
-        message=user_msg,
-        session_id=sess_id
-    )
-    db.session.add(user_entry)
+    if target_language not in supported_languages:
+        return jsonify({"error": "Unsupported language"}), 400
 
-    audio_url = None
+    if not MODEL_LOADED:
+        return jsonify({
+            "error": "Chatbot model is not loaded."
+        }), 503
 
-    if MODEL_LOADED:
-        # Translate the user's message into English for the chatbot model
+    try:
+        # Step 1: Translate the user's message into English.
         english_message = translate_text(
             user_msg,
-            "en"
+            target_language="en"
         )
 
+        # Step 2: Process the English message using the existing model.
         intents_list = predict_class(english_message)
-        bot_reply = get_response(intents_list, intents)
+        english_reply = get_response(intents_list, intents)
 
-        # Translate the chatbot's English response into the selected language
+        # Step 3: Translate the response into the selected language.
         bot_reply = translate_text(
-            bot_reply,
-            target_language,
+            english_reply,
+            target_language=target_language,
             source_language="en"
         )
 
-        audio_path = generate_audio(bot_reply)
+        # Step 4: Generate audio in the selected language.
+        audio_path = generate_audio(
+            bot_reply,
+            language=target_language
+        )
+
         audio_url = f"/static/hologram/{os.path.basename(audio_path)}"
 
-    else:
-        bot_reply = "Model not loaded. Please ensure chatbot_model.h5 is present."
+        # Step 5: Save conversation.
+        user_entry = ChatMessage(
+            user_id=current_user.id,
+            sender="user",
+            message=user_msg,
+            session_id=sess_id
+        )
 
-    bot_entry = ChatMessage(
-        user_id=current_user.id,
-        sender="bot",
-        message=bot_reply,
-        session_id=sess_id
-    )
-    db.session.add(bot_entry)
-    db.session.commit()
+        bot_entry = ChatMessage(
+            user_id=current_user.id,
+            sender="bot",
+            message=bot_reply,
+            session_id=sess_id
+        )
 
-    return jsonify({
-        "reply": bot_reply,
-        "timestamp": datetime.utcnow().strftime("%I:%M %p"),
-        "audio_url": audio_url,
-        "video_url": None
-    })
+        db.session.add(user_entry)
+        db.session.add(bot_entry)
+        db.session.commit()
 
+        return jsonify({
+            "reply": bot_reply,
+            "timestamp": datetime.utcnow().strftime("%I:%M %p"),
+            "audio_url": audio_url,
+            "video_url": None
+        })
 
-@app.route("/api/history")
-@login_required
-def api_history():
-    messages = (
-        ChatMessage.query.filter_by(user_id=current_user.id)
-        .order_by(ChatMessage.timestamp.asc())
-        .all()
-    )
-    return jsonify(
-        [
-            {
-                "sender": m.sender,
-                "message": m.message,
-                "timestamp": m.timestamp.strftime("%b %d, %I:%M %p"),
-                "session_id": m.session_id,
-            }
-            for m in messages
-        ]
-    )
+    except Exception:
+        db.session.rollback()
+        app.logger.exception("Chat processing failed")
 
+        return jsonify({
+            "error": "Unable to process your message. Please try again."
+        }), 500
 
 @app.route("/api/clear_history", methods=["POST"])
 @login_required
