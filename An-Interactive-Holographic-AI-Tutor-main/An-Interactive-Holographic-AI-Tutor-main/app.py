@@ -239,12 +239,12 @@ def detect_input_language(text, selected_language=None):
     return "autodetect"
 
 
+
 def translate_text(
     text,
     target_language="en",
     source_language=None
 ):
-
     if not text:
         return text
 
@@ -253,7 +253,12 @@ def translate_text(
     if source_language == "auto":
         source_language = "autodetect"
 
+    # No translation is required.
     if source_language == target_language:
+        return text
+
+    # Avoid unnecessary API calls for ordinary English messages.
+    if source_language == "autodetect" and text.isascii():
         return text
 
     url = "https://api.mymemory.translated.net/get"
@@ -264,45 +269,58 @@ def translate_text(
         "mt": "1",
     }
 
-    response = requests.get(
-        url,
-        params=params,
-        timeout=15
-    )
-
-    response.raise_for_status()
-
-    result = response.json()
-
-    if str(result.get("responseStatus")) != "200":
-
-        details = str(
-            result.get("responseDetails", "")
+    try:
+        response = requests.get(
+            url,
+            params=params,
+            timeout=10
         )
 
-        if (
-            source_language == "autodetect"
-            and target_language == "en"
-            and "PLEASE SELECT TWO DISTINCT LANGUAGES"
-            in details.upper()
-        ):
+        # Handle rate limits without stopping the chatbot.
+        if response.status_code == 429:
+            app.logger.warning(
+                "MyMemory rate limit reached. "
+                "Using original text as fallback."
+            )
             return text
 
-        raise RuntimeError(
-            f"Translation service failed: {details}"
+        response.raise_for_status()
+
+        result = response.json()
+
+        if str(result.get("responseStatus")) != "200":
+            app.logger.warning(
+                "Translation service returned an error: %s",
+                result.get("responseDetails")
+            )
+            return text
+
+        translated_text = (
+            result.get("responseData", {})
+            .get("translatedText")
         )
 
-    translated_text = (
-        result.get("responseData", {})
-        .get("translatedText")
-    )
+        if not translated_text:
+            app.logger.warning(
+                "Translation service returned an empty response."
+            )
+            return text
 
-    if not translated_text:
-        raise RuntimeError(
-            "Translation returned an empty response"
+        return translated_text
+
+    except requests.exceptions.RequestException:
+        app.logger.exception(
+            "Translation API request failed. "
+            "Using original text as fallback."
         )
+        return text
 
-    return translated_text
+    except (ValueError, TypeError, AttributeError):
+        app.logger.exception(
+            "Unable to process translation response. "
+            "Using original text as fallback."
+        )
+        return text
 
 
 # --------------------------------------------------
