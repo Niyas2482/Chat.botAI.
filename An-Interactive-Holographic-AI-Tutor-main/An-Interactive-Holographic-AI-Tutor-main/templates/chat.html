@@ -899,6 +899,31 @@
   border-color: var(--blue);
 }
 
+.input-preferences {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+
+.language-select {
+  max-width: 145px;
+  padding: 6px 9px;
+  border: 1px solid rgba(15, 14, 23, .15);
+  border-radius: 7px;
+  background: var(--card);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.language-select:focus {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
 @media (max-width: 480px) {
   .input-hints {
     flex-wrap: wrap;
@@ -1093,9 +1118,26 @@
               <button class="input-btn send-btn" id="sendBtn" title="Send message">➤</button>
             </div>
           </div>
-          <div class="input-hints">
-            <span>Press <b>Enter</b> to send, <b>Shift+Enter</b> for new line</span>
-            <label class="tts-toggle" title="Toggle voice response">
+         <div class="input-hints">
+  <span>Press <b>Enter</b> to send, <b>Shift+Enter</b> for new line</span>
+
+  <div class="input-preferences">
+    <label for="languageSelect">Language:</label>
+    <select id="languageSelect" class="language-select">
+      <option value="en">English</option>
+      <option value="ta">தமிழ் (Tamil)</option>
+      <option value="hi">हिन्दी (Hindi)</option>
+      <option value="te">తెలుగు (Telugu)</option>
+      <option value="ml">മലയാളം (Malayalam)</option>
+      <option value="kn">ಕನ್ನಡ (Kannada)</option>
+      <option value="fr">Français (French)</option>
+      <option value="es">Español (Spanish)</option>
+      <option value="de">Deutsch (German)</option>
+      <option value="ar">العربية (Arabic)</option>
+    </select>
+  </div>
+
+  <label class="tts-toggle" title="Toggle voice response">
               <span>🔊 Voice Response</span>
               <div class="toggle-switch on" id="ttsToggle"></div>
             </label>
@@ -1144,6 +1186,34 @@
 
   <script>
   const SESSION_ID = 'sess_' + Date.now();
+    const languageSelect = document.getElementById('languageSelect');
+
+languageSelect.value = localStorage.getItem('edubot_language') || 'en';
+
+languageSelect.addEventListener('change', () => {
+  localStorage.setItem('edubot_language', languageSelect.value);
+
+  if (recognition) {
+    recognition.lang = getSpeechLanguage(languageSelect.value);
+  }
+});
+
+function getSpeechLanguage(language) {
+  const speechLanguages = {
+    en: 'en-IN',
+    ta: 'ta-IN',
+    hi: 'hi-IN',
+    te: 'te-IN',
+    ml: 'ml-IN',
+    kn: 'kn-IN',
+    fr: 'fr-FR',
+    es: 'es-ES',
+    de: 'de-DE',
+    ar: 'ar-SA'
+  };
+
+  return speechLanguages[language] || 'en-IN';
+}
   let ttsEnabled = true;
   let isListening = false;
   let messageHistory = [];
@@ -1312,11 +1382,11 @@ async function sendMessage() {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        message: text,
-        session_id: SESSION_ID,
-        language: selectedLanguage
-      })
+     body: JSON.stringify({
+  message: text,
+  language: languageSelect.value,
+  session_id: SESSION_ID
+})
     });
 
     if (!res.ok) {
