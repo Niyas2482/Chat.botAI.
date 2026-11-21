@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EduBot — Chat</title>
+  <title>EduBot â€” Chat</title>
   <link
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap"
     rel="stylesheet">
@@ -382,7 +382,7 @@
       overflow: hidden
     }
 
-    /* ── 60% Avatar pane ── */
+    /* â”€â”€ 60% Avatar pane â”€â”€ */
     .avatar-pane {
       flex: 0 0 60%;
       position: relative;
@@ -469,7 +469,7 @@
       font-family: 'DM Sans', sans-serif
     }
 
-    /* ── 40% Chat pane ── */
+    /* â”€â”€ 40% Chat pane â”€â”€ */
     .chat-area {
       flex: 0 0 40%;
       display: flex;
@@ -762,6 +762,8 @@
     }
 
     .input-hints {
+      flex-wrap: wrap;
+      gap: 10px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -1038,9 +1040,9 @@
 
   <header class="app-header">
     <div class="header-left">
-      <button class="sidebar-toggle" id="sidebarToggle" title="Toggle sidebar">☰</button>
+      <button class="sidebar-toggle" id="sidebarToggle" title="Toggle sidebar">â˜°</button>
       <a href="/" class="header-logo">
-        <div class="header-logo-icon">🎓</div>
+        <div class="header-logo-icon">ðŸŽ“</div>
         <div class="header-logo-text">Edu<span>Bot</span></div>
       </a>
     </div>
@@ -1053,7 +1055,7 @@
         <div class="user-avatar">{{ user.full_name[0].upper() }}</div>
         <span>{{ user.full_name.split()[0] }}</span>
       </div>
-      <a href="/api/export_pdf" class="header-btn hbtn-ghost" title="Export PDF">📄 Export PDF</a>
+      <a href="/api/export_pdf" class="header-btn hbtn-ghost" title="Export PDF">ðŸ“„ Export PDF</a>
       <a href="/logout" class="header-btn hbtn-ghost">Sign Out</a>
     </div>
   </header>
@@ -1062,21 +1064,21 @@
 
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-section">
-        <button class="new-chat-btn" id="newChatBtn">✚ New Conversation</button>
+        <button class="new-chat-btn" id="newChatBtn">âœš New Conversation</button>
         <div class="sidebar-section-title">Chat History</div>
       </div>
       <div class="history-list" id="historyList">
         <div style="text-align:center;padding:32px 0;color:var(--ink-muted);font-size:13px">Loading history...</div>
       </div>
       <div class="sidebar-footer">
-        <a href="/api/export_pdf" class="export-btn">📄 Export as PDF</a>
-        <button class="clear-btn" id="clearBtn">🗑️ Clear All History</button>
+        <a href="/api/export_pdf" class="export-btn">ðŸ“„ Export as PDF</a>
+        <button class="clear-btn" id="clearBtn">ðŸ—‘ï¸ Clear All History</button>
       </div>
     </aside>
 
     <div class="chat-main">
 
-      <!-- ── 60% Avatar pane ── -->
+      <!-- â”€â”€ 60% Avatar pane â”€â”€ -->
       <div class="avatar-pane" id="avatarPane">
         <video id="avatarVideo" loop muted playsinline>
           <source src="/static/videos/avatar.mp4" type="video/mp4">
@@ -1091,13 +1093,13 @@
         </div>
       </div>
 
-      <!-- ── 40% Chat pane ── -->
+      <!-- â”€â”€ 40% Chat pane â”€â”€ -->
       <div class="chat-area" id="chatArea">
         <div class="messages-wrap" id="messagesWrap">
           <div class="welcome-msg" id="welcomeMsg">
-            <div class="welcome-icon">🎓</div>
+            <div class="welcome-icon">ðŸŽ“</div>
             <h2>Hello, {{ user.full_name.split()[0] }}!</h2>
-            <p>I'm EduBot, your AI study assistant. Ask me anything about your subjects — type or use your voice!</p>
+            <p>I'm EduBot, your AI study assistant. Ask me anything about your subjects â€” type or use your voice!</p>
             <div class="quick-chips">
               <div class="chip" onclick="sendQuick(this)">What is Pythagoras theorem?</div>
               <div class="chip" onclick="sendQuick(this)">Explain Newton's laws</div>
@@ -1114,31 +1116,31 @@
             <textarea class="msg-textarea" id="msgInput"
               placeholder="Ask your doubt... (e.g. What is Newton's second law?)" rows="1"></textarea>
             <div class="input-actions">
-              <button class="input-btn voice-btn" id="voiceBtn" title="Voice input">🎙️</button>
-              <button class="input-btn send-btn" id="sendBtn" title="Send message">➤</button>
+              <button class="input-btn voice-btn" id="voiceBtn" title="Voice input">ðŸŽ™ï¸</button>
+              <button class="input-btn send-btn" id="sendBtn" title="Send message">âž¤</button>
             </div>
           </div>
-         <div class="input-hints">
-  <span>Press <b>Enter</b> to send, <b>Shift+Enter</b> for new line</span>
+          <div class="input-hints">
+            <span>Press <b>Enter</b> to send, <b>Shift+Enter</b> for new line</span>
 
-  <div class="input-preferences">
-    <label for="languageSelect">Language:</label>
-    <select id="languageSelect" class="language-select">
-      <option value="en">English</option>
-      <option value="ta">தமிழ் (Tamil)</option>
-      <option value="hi">हिन्दी (Hindi)</option>
-      <option value="te">తెలుగు (Telugu)</option>
-      <option value="ml">മലയാളം (Malayalam)</option>
-      <option value="kn">ಕನ್ನಡ (Kannada)</option>
-      <option value="fr">Français (French)</option>
-      <option value="es">Español (Spanish)</option>
-      <option value="de">Deutsch (German)</option>
-      <option value="ar">العربية (Arabic)</option>
-    </select>
-  </div>
+            <div class="input-preferences">
+              <label for="languageSelect">Language:</label>
+              <select id="languageSelect" class="language-select">
+                <option value="en">English</option>
+                <option value="ta">à®¤à®®à®¿à®´à¯ (Tamil)</option>
+                <option value="hi">à¤¹à¤¿à¤¨à¥à¤¦à¥€ (Hindi)</option>
+                <option value="te">à°¤à±†à°²à±à°—à± (Telugu)</option>
+                <option value="ml">à´®à´²à´¯à´¾à´³à´‚ (Malayalam)</option>
+                <option value="kn">à²•à²¨à³à²¨à²¡ (Kannada)</option>
+                <option value="fr">FranÃ§ais (French)</option>
+                <option value="es">EspaÃ±ol (Spanish)</option>
+                <option value="de">Deutsch (German)</option>
+                <option value="ar">Ø§Ù„Ø¹Ø±Ø¨ÙŠØ© (Arabic)</option>
+              </select>
+            </div>
 
-  <label class="tts-toggle" title="Toggle voice response">
-              <span>🔊 Voice Response</span>
+            <label class="tts-toggle" title="Toggle voice response">
+              <span>ðŸ”Š Voice Response</span>
               <div class="toggle-switch on" id="ttsToggle"></div>
             </label>
           </div>
@@ -1160,329 +1162,501 @@
   </div>
 
 
-<div class="input-hints">
-  <div style="display:flex;align-items:center;gap:8px;">
-    <label for="languageSelect">🌐 Language:</label>
-    <select id="languageSelect" class="language-select">
-      <option value="en">English</option>
-      <option value="ta">தமிழ் (Tamil)</option>
-      <option value="hi">हिन्दी (Hindi)</option>
-      <option value="te">తెలుగు (Telugu)</option>
-      <option value="ml">മലയാളം (Malayalam)</option>
-      <option value="kn">ಕನ್ನಡ (Kannada)</option>
-      <option value="fr">French</option>
-      <option value="es">Spanish</option>
-      <option value="de">German</option>
-      <option value="ar">Arabic</option>
-    </select>
-  </div>
+<script>
+    let SESSION_ID = 'sess_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
 
-  <label class="tts-toggle" title="Toggle voice response">
-    <span>🔊 Voice Response</span>
-    <div class="toggle-switch on" id="ttsToggle"></div>
-  </label>
-</div>
+    const userFirstName = {{ user.full_name.split()[0] | tojson }};
+    const userInitial = {{ user.full_name[0].upper() | tojson }};
 
-
-  <script>
-  const SESSION_ID = 'sess_' + Date.now();
     const languageSelect = document.getElementById('languageSelect');
+    const messagesWrap = document.getElementById('messagesWrap');
+    const msgInput = document.getElementById('msgInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const voiceBtn = document.getElementById('voiceBtn');
+    const historyList = document.getElementById('historyList');
+    const ttsToggle = document.getElementById('ttsToggle');
 
-languageSelect.value = localStorage.getItem('edubot_language') || 'en';
+    const avatarPane = document.getElementById('avatarPane');
+    const avatarVideo = document.getElementById('avatarVideo');
+    const avIdleImg = document.getElementById('avIdleImg');
+    const avDot = document.getElementById('avDot');
+    const avLabel = document.getElementById('avLabel');
 
-languageSelect.addEventListener('change', () => {
-  localStorage.setItem('edubot_language', languageSelect.value);
+    let ttsEnabled = true;
+    let recognition = null;
 
-  if (recognition) {
-    recognition.lang = getSpeechLanguage(languageSelect.value);
-  }
-});
+    // Restore the selected language.
+    languageSelect.value = localStorage.getItem('edubot_language') || 'en';
 
-function getSpeechLanguage(language) {
-  const speechLanguages = {
-    en: 'en-IN',
-    ta: 'ta-IN',
-    hi: 'hi-IN',
-    te: 'te-IN',
-    ml: 'ml-IN',
-    kn: 'kn-IN',
-    fr: 'fr-FR',
-    es: 'es-ES',
-    de: 'de-DE',
-    ar: 'ar-SA'
-  };
+    function getSpeechLanguage(language) {
+        const speechLanguages = {
+            en: 'en-IN',
+            ta: 'ta-IN',
+            hi: 'hi-IN',
+            te: 'te-IN',
+            ml: 'ml-IN',
+            kn: 'kn-IN',
+            fr: 'fr-FR',
+            es: 'es-ES',
+            de: 'de-DE',
+            ar: 'ar-SA'
+        };
 
-  return speechLanguages[language] || 'en-IN';
-}
-  let ttsEnabled = true;
-  let isListening = false;
-  let messageHistory = [];
-  let sidebarOpen = true;
-
-  const messagesWrap = document.getElementById('messagesWrap');
-  const msgInput = document.getElementById('msgInput');
-  const sendBtn = document.getElementById('sendBtn');
-  const voiceBtn = document.getElementById('voiceBtn');
-  const historyList = document.getElementById('historyList');
-  const ttsToggle = document.getElementById('ttsToggle');
-    const languageSelect = document.getElementById('languageSelect');
-
-// Restore previously selected language
-languageSelect.value = localStorage.getItem('edubot_language') || 'en';
-
-// Save language selection
-languageSelect.addEventListener('change', () => {
-  localStorage.setItem('edubot_language', languageSelect.value);
-
-  // Update speech recognition language
-  if (recognition) {
-    recognition.lang = getSpeechLanguage(languageSelect.value);
-  }
-});
-
-function getSpeechLanguage(language) {
-  const speechLanguages = {
-    en: 'en-IN',
-    ta: 'ta-IN',
-    hi: 'hi-IN',
-    te: 'te-IN',
-    ml: 'ml-IN',
-    kn: 'kn-IN',
-    fr: 'fr-FR',
-    es: 'es-ES',
-    de: 'de-DE',
-    ar: 'ar-SA'
-  };
-
-  return speechLanguages[language] || 'en-IN';
-}
-  const avatarPane = document.getElementById('avatarPane');
-  const avatarVideo = document.getElementById('avatarVideo');
-  const avIdleImg = document.getElementById('avIdleImg');
-  const avDot = document.getElementById('avDot');
-  const avLabel = document.getElementById('avLabel');
-
-  avatarVideo.addEventListener('canplay', () => { avIdleImg.style.opacity = '0'; }, { once: true });
-  avatarVideo.addEventListener('error', () => { avatarVideo.style.display = 'none'; avIdleImg.style.opacity = '1'; });
-
-  function setAvatarState(state) {
-    if (state === 'speaking') {
-      avatarPane.classList.add('speaking');
-      avDot.className = 'av-status-dot speaking';
-      avLabel.textContent = 'Speaking…';
-      avatarVideo.play().catch(() => {});
-      avIdleImg.style.opacity = '0';
-    } else if (state === 'thinking') {
-      avatarPane.classList.remove('speaking');
-      avDot.className = 'av-status-dot active';
-      avLabel.textContent = 'Thinking…';
-    } else {
-      avatarPane.classList.remove('speaking');
-      avDot.className = 'av-status-dot';
-      avLabel.textContent = 'Ready to teach';
-      avatarVideo.pause();
-      avatarVideo.currentTime = 0;
-      avIdleImg.style.opacity = '1';
+        return speechLanguages[language] || 'en-IN';
     }
-  }
 
-  // ✅ NEW: backend audio player (male voice)
-  function playBackendAudio(audioUrl) {
-    const audio = new Audio(audioUrl + "?t=" + new Date().getTime());
+    languageSelect.addEventListener('change', () => {
+        localStorage.setItem('edubot_language', languageSelect.value);
 
-    audio.onplay = () => setAvatarState('speaking');
-    audio.onended = () => setAvatarState('idle');
-    audio.onerror = () => setAvatarState('idle');
-
-    audio.play().catch(() => setAvatarState('idle'));
-  }
-
-  ttsToggle.addEventListener('click', () => {
-    ttsEnabled = !ttsEnabled;
-    ttsToggle.classList.toggle('on', ttsEnabled);
-  });
-
-  msgInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  });
-
-  msgInput.addEventListener('input', function () {
-    this.style.height = 'auto';
-    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-  });
-
-  sendBtn.addEventListener('click', sendMessage);
-
-  function addMessage(sender, text, timestamp) {
-    const w = document.getElementById('welcomeMsg');
-    if (w) w.remove();
-
-    const row = document.createElement('div');
-    row.className = 'msg-row ' + sender;
-
-    const initials = sender === 'user' ? '{{ user.full_name[0].upper() }}' : 'E';
-    const name = sender === 'user' ? '{{ user.full_name.split()[0] }}' : 'EduBot';
-    const time = timestamp || new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-
-    row.innerHTML = `
-      <div class="msg-avatar ${sender === 'bot' ? 'bot-av' : 'user-av'}">${initials}</div>
-      <div class="msg-content">
-        <div class="msg-name">${name}</div>
-        <div class="msg-bubble">${text}</div>
-        <div class="msg-time">${time}</div>
-      </div>`;
-
-    messagesWrap.appendChild(row);
-    messagesWrap.scrollTop = messagesWrap.scrollHeight;
-  }
-
-  function showTyping() {
-    const row = document.createElement('div');
-    row.className = 'msg-row bot';
-    row.id = 'typingRow';
-    row.innerHTML = `<div class="msg-avatar bot-av">E</div>
-      <div class="msg-content">
-        <div class="msg-name">EduBot</div>
-        <div class="typing-indicator">
-          <div class="typing-dot"></div>
-          <div class="typing-dot"></div>
-          <div class="typing-dot"></div>
-        </div>
-      </div>`;
-    messagesWrap.appendChild(row);
-    messagesWrap.scrollTop = messagesWrap.scrollHeight;
-  }
-
-  function removeTyping() {
-    const t = document.getElementById('typingRow');
-    if (t) t.remove();
-  }
-
-
-async function sendMessage() {
-  const text = msgInput.value.trim();
-  if (!text) return;
-
-  // Get currently selected language
-  const selectedLanguage = languageSelect.value;
-
-  msgInput.value = '';
-  sendBtn.disabled = true;
-
-  addMessage('user', text);
-  showTyping();
-  setAvatarState('thinking');
-
-  try {
-    const res = await fetch('/api/message', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-     body: JSON.stringify({
-  message: text,
-  language: languageSelect.value,
-  session_id: SESSION_ID
-})
+        if (recognition) {
+            recognition.lang = getSpeechLanguage(languageSelect.value);
+        }
     });
 
-    if (!res.ok) {
-      throw new Error(`Server error: ${res.status}`);
+    // Avatar controls.
+    avatarVideo.addEventListener('canplay', () => {
+        avIdleImg.style.opacity = '0';
+    }, { once: true });
+
+    avatarVideo.addEventListener('error', () => {
+        avatarVideo.style.display = 'none';
+        avIdleImg.style.opacity = '1';
+    });
+
+    function setAvatarState(state) {
+        if (state === 'speaking') {
+            avatarPane.classList.add('speaking');
+            avDot.className = 'av-status-dot speaking';
+            avLabel.textContent = 'Speakingâ€¦';
+            avatarVideo.play().catch(() => {});
+            avIdleImg.style.opacity = '0';
+        } else if (state === 'thinking') {
+            avatarPane.classList.remove('speaking');
+            avDot.className = 'av-status-dot active';
+            avLabel.textContent = 'Thinkingâ€¦';
+        } else {
+            avatarPane.classList.remove('speaking');
+            avDot.className = 'av-status-dot';
+            avLabel.textContent = 'Ready to teach';
+            avatarVideo.pause();
+            avatarVideo.currentTime = 0;
+            avIdleImg.style.opacity = '1';
+        }
     }
 
-    const data = await res.json();
-    removeTyping();
+    function playBackendAudio(audioUrl) {
+        const audio = new Audio(audioUrl + '?t=' + Date.now());
 
-    if (data.reply) {
-      addMessage('bot', data.reply, data.timestamp);
+        audio.onplay = () => setAvatarState('speaking');
+        audio.onended = () => setAvatarState('idle');
+        audio.onerror = () => setAvatarState('idle');
 
-      // Play audio generated by backend
-      if (ttsEnabled && data.audio_url) {
-        playBackendAudio(data.audio_url);
-      } else {
+        audio.play().catch(() => setAvatarState('idle'));
+    }
+
+    // Voice-response toggle.
+    ttsToggle.addEventListener('click', () => {
+        ttsEnabled = !ttsEnabled;
+        ttsToggle.classList.toggle('on', ttsEnabled);
+    });
+
+    // Safely display the welcome screen.
+    function showWelcomeMessage() {
+        messagesWrap.innerHTML = '';
+
+        const welcome = document.createElement('div');
+        welcome.className = 'welcome-msg';
+        welcome.id = 'welcomeMsg';
+
+        const icon = document.createElement('div');
+        icon.className = 'welcome-icon';
+        icon.textContent = 'ðŸŽ“';
+
+        const heading = document.createElement('h2');
+        heading.textContent = 'Hello, ' + userFirstName + '!';
+
+        const description = document.createElement('p');
+        description.textContent =
+            "I'm EduBot, your AI study assistant. Ask me anything about your subjects â€” type or use your voice!";
+
+        const chips = document.createElement('div');
+        chips.className = 'quick-chips';
+
+        const suggestions = [
+            'What is Pythagoras theorem?',
+            "Explain Newton's laws",
+            'What is photosynthesis?',
+            'How to solve quadratic equations?',
+            'Trigonometry basics',
+            'What is artificial intelligence?'
+        ];
+
+        suggestions.forEach(question => {
+            const chip = document.createElement('button');
+            chip.className = 'chip';
+            chip.type = 'button';
+            chip.textContent = question;
+            chip.addEventListener('click', () => {
+                msgInput.value = question;
+                sendMessage();
+            });
+            chips.appendChild(chip);
+        });
+
+        welcome.append(icon, heading, description, chips);
+        messagesWrap.appendChild(welcome);
+    }
+
+    // Safely add a message without inserting user text as HTML.
+    function addMessage(sender, text, timestamp) {
+        const welcome = document.getElementById('welcomeMsg');
+        if (welcome) welcome.remove();
+
+        const row = document.createElement('div');
+        row.className = 'msg-row ' + sender;
+
+        const avatar = document.createElement('div');
+        avatar.className =
+            'msg-avatar ' + (sender === 'bot' ? 'bot-av' : 'user-av');
+        avatar.textContent = sender === 'bot' ? 'E' : userInitial;
+
+        const content = document.createElement('div');
+        content.className = 'msg-content';
+
+        const nameElement = document.createElement('div');
+        nameElement.className = 'msg-name';
+        nameElement.textContent =
+            sender === 'bot' ? 'EduBot' : userFirstName;
+
+        const bubble = document.createElement('div');
+        bubble.className = 'msg-bubble';
+        bubble.textContent = text;
+
+        const timeElement = document.createElement('div');
+        timeElement.className = 'msg-time';
+        timeElement.textContent = timestamp ||
+            new Date().toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+        content.append(nameElement, bubble, timeElement);
+        row.append(avatar, content);
+
+        messagesWrap.appendChild(row);
+        messagesWrap.scrollTop = messagesWrap.scrollHeight;
+    }
+
+    function showTyping() {
+        const row = document.createElement('div');
+        row.className = 'msg-row bot';
+        row.id = 'typingRow';
+
+        row.innerHTML = `
+            <div class="msg-avatar bot-av">E</div>
+            <div class="msg-content">
+                <div class="msg-name">EduBot</div>
+                <div class="typing-indicator">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>`;
+
+        messagesWrap.appendChild(row);
+        messagesWrap.scrollTop = messagesWrap.scrollHeight;
+    }
+
+    function removeTyping() {
+        const typing = document.getElementById('typingRow');
+        if (typing) typing.remove();
+    }
+
+    // Load the conversation list from Flask.
+    async function loadHistory() {
+        try {
+            const response = await fetch('/api/history');
+
+            if (!response.ok) {
+                throw new Error('Unable to load chat history');
+            }
+
+            const data = await response.json();
+            historyList.innerHTML = '';
+
+            if (!data.conversations || data.conversations.length === 0) {
+                historyList.innerHTML = `
+                    <div style="text-align:center;padding:32px 0;color:var(--ink-muted);font-size:13px">
+                        No conversations yet
+                    </div>`;
+                return;
+            }
+
+            data.conversations.forEach(conversation => {
+                const item = document.createElement('div');
+                item.className = 'history-item';
+                item.dataset.sessionId = conversation.session_id;
+
+                const title = document.createElement('div');
+                title.className = 'history-item-text';
+                title.textContent = conversation.title || 'New Conversation';
+
+                const time = document.createElement('div');
+                time.className = 'history-item-time';
+                time.textContent = conversation.timestamp || '';
+
+                item.append(title, time);
+
+                item.addEventListener('click', () => {
+                    loadConversation(conversation.session_id);
+                });
+
+                if (conversation.session_id === SESSION_ID) {
+                    item.classList.add('active');
+                }
+
+                historyList.appendChild(item);
+            });
+
+        } catch (error) {
+            console.error('History loading error:', error);
+            historyList.innerHTML = `
+                <div style="text-align:center;padding:20px;color:var(--red)">
+                    Failed to load history
+                </div>`;
+        }
+    }
+
+    // Load messages belonging to one selected conversation.
+    async function loadConversation(sessionId) {
+        try {
+            const response = await fetch(
+                '/api/history/' + encodeURIComponent(sessionId)
+            );
+
+            if (!response.ok) {
+                throw new Error('Unable to load conversation');
+            }
+
+            const data = await response.json();
+
+            SESSION_ID = sessionId;
+            messagesWrap.innerHTML = '';
+
+            if (!data.messages || data.messages.length === 0) {
+                showWelcomeMessage();
+            } else {
+                data.messages.forEach(message => {
+                    addMessage(
+                        message.sender,
+                        message.message,
+                        message.timestamp
+                    );
+                });
+            }
+
+            document.querySelectorAll('.history-item').forEach(item => {
+                item.classList.toggle(
+                    'active',
+                    item.dataset.sessionId === sessionId
+                );
+            });
+
+            setAvatarState('idle');
+
+        } catch (error) {
+            console.error('Conversation loading error:', error);
+            alert('Unable to load this conversation.');
+        }
+    }
+
+    // Start a completely separate conversation.
+    function startNewConversation() {
+        SESSION_ID =
+            'sess_' + Date.now() + '_' +
+            Math.random().toString(36).slice(2, 8);
+
+        showWelcomeMessage();
+
+        document.querySelectorAll('.history-item').forEach(item => {
+            item.classList.remove('active');
+        });
+
+        msgInput.value = '';
+        msgInput.style.height = 'auto';
+        msgInput.focus();
+
         setAvatarState('idle');
-      }
-    } else {
-      addMessage('bot', data.error || 'Unable to generate a response.');
-      setAvatarState('idle');
     }
 
-  } catch (e) {
-    console.error('Chat error:', e);
+    // Send a message using the current conversation ID.
+    async function sendMessage() {
+        const text = msgInput.value.trim();
+        if (!text || sendBtn.disabled) return;
 
-    removeTyping();
-    addMessage('bot', 'Connection error. Please try again.');
-    setAvatarState('idle');
+        const selectedLanguage = languageSelect.value;
 
-  } finally {
-    sendBtn.disabled = false;
-    msgInput.focus();
-  }
-}
+        msgInput.value = '';
+        msgInput.style.height = 'auto';
+        sendBtn.disabled = true;
 
-    
-let recognition = null;
+        addMessage('user', text);
+        showTyping();
+        setAvatarState('thinking');
 
-if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+        try {
+            const response = await fetch('/api/message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: text,
+                    language: selectedLanguage,
+                    session_id: SESSION_ID
+                })
+            });
 
-  recognition = new SpeechRec();
-  recognition.lang = getSpeechLanguage(languageSelect.value);
+            const data = await response.json();
 
-  recognition.onresult = e => {
-    msgInput.value = e.results[0][0].transcript;
-  };
+            if (!response.ok) {
+                throw new Error(data.error || 'Server error');
+            }
 
-  recognition.onerror = e => {
-    console.error('Speech recognition error:', e.error);
-  };
-}
+            removeTyping();
 
-voiceBtn.addEventListener('click', () => {
-  if (!recognition) {
-    return alert('Voice not supported');
-  }
+            if (data.reply) {
+                addMessage('bot', data.reply, data.timestamp);
 
-  recognition.lang = getSpeechLanguage(languageSelect.value);
-  recognition.start();
-});
+                // Refresh sidebar after saving the conversation.
+                await loadHistory();
 
-    
+                document.querySelectorAll('.history-item').forEach(item => {
+                    item.classList.toggle(
+                        'active',
+                        item.dataset.sessionId === SESSION_ID
+                    );
+                });
 
-  // 🎤 Voice input (unchanged)
-  let recognition = null;
-  if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-    recognition = new SpeechRec();
-recognition.lang = getSpeechLanguage(languageSelect.value);
-   recognition.onresult = e => {
-  msgInput.value = e.results[0][0].transcript;
-};
-  }
+                if (ttsEnabled && data.audio_url) {
+                    playBackendAudio(data.audio_url);
+                } else {
+                    setAvatarState('idle');
+                }
+            } else {
+                addMessage(
+                    'bot',
+                    data.error || 'Unable to generate a response.'
+                );
+                setAvatarState('idle');
+            }
 
-  voiceBtn.addEventListener('click', () => {
-    if (!recognition) return alert('Voice not supported');
-    recognition.start();
-  });
+        } catch (error) {
+            console.error('Chat error:', error);
+            removeTyping();
+            addMessage('bot', error.message || 'Connection error. Please try again.');
+            setAvatarState('idle');
 
-    const selectedLanguage =
-    document.getElementById("languageSelect").value;
+        } finally {
+            sendBtn.disabled = false;
+            msgInput.focus();
+        }
+    }
 
-const response = await fetch("/api/message", {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-        message: userMessage,
-        language: selectedLanguage
-    })
-});
+    // Text input events.
+    sendBtn.addEventListener('click', sendMessage);
 
+    msgInput.addEventListener('keydown', event => {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            sendMessage();
+        }
+    });
+
+    msgInput.addEventListener('input', function () {
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+    });
+
+    // Speech recognition: one instance and one click handler.
+    if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+        const SpeechRec =
+            window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        recognition = new SpeechRec();
+        recognition.lang = getSpeechLanguage(languageSelect.value);
+        recognition.continuous = false;
+        recognition.interimResults = false;
+
+        recognition.onresult = event => {
+            msgInput.value = event.results[0][0].transcript;
+            msgInput.dispatchEvent(new Event('input'));
+            msgInput.focus();
+        };
+
+        recognition.onerror = event => {
+            console.error('Speech recognition error:', event.error);
+        };
+    }
+
+    voiceBtn.addEventListener('click', () => {
+        if (!recognition) {
+            alert('Voice input is not supported in this browser.');
+            return;
+        }
+
+        recognition.lang = getSpeechLanguage(languageSelect.value);
+
+        try {
+            recognition.start();
+        } catch (error) {
+            console.error('Voice recognition could not start:', error);
+        }
+    });
+
+    // New Conversation button.
+    document.getElementById('newChatBtn').addEventListener('click', () => {
+        startNewConversation();
+    });
+
+    // Clear-history modal.
+    document.getElementById('clearBtn').addEventListener('click', () => {
+        document.getElementById('clearModal').classList.add('show');
+    });
+
+    function closeModal() {
+        document.getElementById('clearModal').classList.remove('show');
+    }
+
+    async function confirmClear() {
+        try {
+            const response = await fetch('/api/clear_history', {
+                method: 'POST'
+            });
+
+            if (!response.ok) {
+                throw new Error('Unable to clear history');
+            }
+
+            closeModal();
+            startNewConversation();
+            await loadHistory();
+
+        } catch (error) {
+            console.error('Clear history error:', error);
+            alert('Unable to clear chat history.');
+        }
+    }
+
+    // Sidebar toggle.
+    document.getElementById('sidebarToggle').addEventListener('click', () => {
+        document.getElementById('sidebar').classList.toggle('collapsed');
+    });
+
+    // Load saved conversations when the chat page opens.
+    loadHistory();
 </script>
+
 </body>
 
 </html>

@@ -1,25 +1,42 @@
-# Python cache
+﻿# Python cache
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+*.py[cod]
 
 # Virtual environments
 venv/
 .venv/
 
-# Database
+# Database and local instance data
 *.db
+*.sqlite3
+instance/
+
+# Environment and test files
+.env
+.pytest_cache/
+
+# IDE settings
+.idea/
+.vscode/
 
 # Generated audio/video
 static/hologram/
 hologram/
+
+# Temporary files
+tempCodeRunnerFile.py
+.ipynb_checkpoints/
+
 # Local backups
 *_backup*.py
 *.backup
 *.backup_*
 *_backup_*/
+app.py.backup*
+app_backup_*.py
+app_before_*.py
 backup_chat_history_*/
-
-# Temporary files
-tempCodeRunnerFile.py
-.ipynb_checkpoints/
-instance/
+templates/*backup*

@@ -14,6 +14,7 @@ COPY requirements.txt .
 
 RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt
+RUN python -m nltk.downloader -d /app/nltk_data punkt punkt_tab wordnet omw-1.4
 
 COPY . .
 
