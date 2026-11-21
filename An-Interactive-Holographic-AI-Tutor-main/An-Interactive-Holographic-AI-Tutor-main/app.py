@@ -240,11 +240,145 @@ def detect_input_language(text, selected_language=None):
 
 
 
+
 def translate_text(
     text,
     target_language="en",
     source_language=None
 ):
+    if not text:
+        return text
+
+    source_language = source_language or "autodetect"
+
+    if source_language == "auto":
+        source_language = "autodetect"
+
+    if source_language == target_language:
+        return text
+
+    # Skip translation for ordinary English input.
+    if source_language == "autodetect" and text.isascii():
+        return text
+
+    # Secondary translation provider.
+    def google_translate_fallback():
+
+        google_url = (
+            "https://translate.googleapis.com/"
+            "translate_a/single"
+        )
+
+        params = {
+            "client": "gtx",
+            "sl": (
+                "auto"
+                if source_language == "autodetect"
+                else source_language
+            ),
+            "tl": target_language,
+            "dt": "t",
+            "q": text,
+        }
+
+        response = requests.get(
+            google_url,
+            params=params,
+            timeout=15
+        )
+
+        response.raise_for_status()
+
+        result = response.json()
+
+        translated = "".join(
+            segment[0]
+            for segment in result[0]
+            if segment and segment[0]
+        )
+
+        if not translated:
+            raise RuntimeError(
+                "Secondary translation returned empty text."
+            )
+
+        return translated
+
+    # Try MyMemory first.
+    try:
+
+        url = "https://api.mymemory.translated.net/get"
+
+        params = {
+            "q": text,
+            "langpair": (
+                f"{source_language}|{target_language}"
+            ),
+            "mt": "1",
+        }
+
+        response = requests.get(
+            url,
+            params=params,
+            timeout=10
+        )
+
+        response.raise_for_status()
+
+        result = response.json()
+
+        if str(result.get("responseStatus")) == "200":
+
+            translated_text = (
+                result.get("responseData", {})
+                .get("translatedText")
+            )
+
+            if translated_text:
+                return translated_text
+
+        app.logger.warning(
+            "MyMemory translation failed: %s. "
+            "Trying secondary provider.",
+            result.get("responseDetails", "Unknown error")
+        )
+
+    except requests.exceptions.RequestException:
+
+        app.logger.exception(
+            "MyMemory request failed. Trying secondary provider."
+        )
+
+    except (ValueError, TypeError, AttributeError):
+
+        app.logger.exception(
+            "Invalid MyMemory response. Trying secondary provider."
+        )
+
+    # Try secondary provider.
+    try:
+
+        translated_text = google_translate_fallback()
+
+        app.logger.info(
+            "Secondary translation succeeded: %s -> %s",
+            source_language,
+            target_language
+        )
+
+        return translated_text
+
+    except Exception:
+
+        app.logger.exception(
+            "Secondary translation also failed: %s -> %s",
+            source_language,
+            target_language
+        )
+
+        # Keep the application working if both providers fail.
+        return text
+
     if not text:
         return text
 
@@ -320,8 +454,7 @@ def translate_text(
             "Unable to process translation response. "
             "Using original text as fallback."
         )
-        return text
-
+        return Text
 
 # --------------------------------------------------
 # LOGIN MANAGER
